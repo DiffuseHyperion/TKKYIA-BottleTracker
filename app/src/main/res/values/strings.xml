@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">TKKYIA-BottleTracker</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_setup">Add Bottle</string>
+    <string name="menu_settings">Settings</string>
+
+    <string name="dot">.</string>
+    <string name="_123">123</string>
+    <string name="type_in_the_four_numbers_displayed_on_the_panel">Type the four numbers displayed on the panel!</string>
+    <string name="give_it_a_name_to_recognise_it">Give the bottle a name!</string>
+    <string name="name">Bottle</string>
+    <string name="save">Save!</string>
+    <string name="saved_bottles">Saved bottles:</string>
+    <string name="there_are_no_bottles_saved">There are no bottles saved...</string>
+    <string name="save_one_below">Save one below!</string>
+    <string name="start">Start!</string>
+    <string name="clear_all_saved_trackers_proceed_with_caution">Clear all saved trackers. Proceed with caution!</string>
+    <string name="clear_data">Clear data</string>
+    <string name="not_much_here_right_now">not much here right now</string>
+    <string name="home">Home</string>
+
+</resources>

@@ -13,10 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TKKYIABottleTracker"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAyzlmu17jXPHKT_WJU9Kw5O91IVHc-Kt4" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.TKKYIABottleTracker.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

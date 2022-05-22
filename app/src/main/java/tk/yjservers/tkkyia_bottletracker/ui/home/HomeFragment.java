@@ -9,39 +9,81 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import tk.yjservers.tkkyia_bottletracker.R;
 import tk.yjservers.tkkyia_bottletracker.databinding.FragmentHomeBinding;
+import tk.yjservers.tkkyia_bottletracker.databinding.FragmentHomeMapBinding;
+import tk.yjservers.tkkyia_bottletracker.databinding.FragmentHomeNosavedBinding;
+import tk.yjservers.tkkyia_bottletracker.databinding.FragmentHomeSavedBinding;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment{
 
-    private View view;
+    private FragmentHomeBinding rootbinding;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater, container, false);
+        rootbinding = FragmentHomeBinding.inflate(inflater, container, false);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
         if (sharedPreferences.getAll().isEmpty()) {
-            binding.lay1.getRoot().setVisibility(View.GONE);
-            binding.lay2.getRoot().setVisibility(View.VISIBLE);
-            binding.lay2.setup.setOnClickListener(v -> {
-                NavHostFragment.findNavController(this).navigate(R.id.nav_setup);
-            });
+            FragmentHomeNosavedBinding binding = (FragmentHomeNosavedBinding) setLayoutVisibility(Layouts.NOSAVED);
+            binding.setup.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.nav_setup));
         } else {
-            binding.lay1.getRoot().setVisibility(View.VISIBLE);
-            binding.lay2.getRoot().setVisibility(View.GONE);
+            FragmentHomeSavedBinding binding = (FragmentHomeSavedBinding) setLayoutVisibility(Layouts.SAVED);
             Map<String, ?> set = sharedPreferences.getAll();
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_home_saved_textview, set.keySet().toArray(new String[0]));
-            binding.lay1.homeList.setAdapter(adapter);
+            String[] list = set.keySet().toArray(new String[0]);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_home_saved_textview, list);
+            binding.homeList.setAdapter(adapter);
+            binding.homeList.setClickable(true);
+            binding.homeList.setOnItemClickListener((parent, view, position, id) -> {
+                FragmentHomeMapBinding binding1 = (FragmentHomeMapBinding) setLayoutVisibility(Layouts.MAP);
+                binding1.mapView.onCreate(savedInstanceState);
+                binding1.mapView.onResume();
+                String name = Arrays.asList(list).get(position);
+                binding1.mapView.getMapAsync(new MapFragment(name));
+                Toast.makeText(getContext(), (String) set.get(name), Toast.LENGTH_SHORT).show();
+            });
         }
 
-        return binding.getRoot();
+        return rootbinding.getRoot();
+    }
+
+    private enum Layouts {
+        SAVED,
+        NOSAVED,
+        MAP
+    }
+
+    private Object setLayoutVisibility(Layouts layout) {
+        Object returnlayout = rootbinding.lay1;
+        switch (layout) {
+            case SAVED:
+                rootbinding.lay1.getRoot().setVisibility(View.VISIBLE);
+                rootbinding.lay2.getRoot().setVisibility(View.GONE);
+                rootbinding.lay3.getRoot().setVisibility(View.GONE);
+                returnlayout = rootbinding.lay1;
+                break;
+            case NOSAVED:
+                rootbinding.lay1.getRoot().setVisibility(View.GONE);
+                rootbinding.lay2.getRoot().setVisibility(View.VISIBLE);
+                rootbinding.lay3.getRoot().setVisibility(View.GONE);
+                returnlayout = rootbinding.lay2;
+                break;
+            case MAP:
+                rootbinding.lay1.getRoot().setVisibility(View.GONE);
+                rootbinding.lay2.getRoot().setVisibility(View.GONE);
+                rootbinding.lay3.getRoot().setVisibility(View.VISIBLE);
+                returnlayout = rootbinding.lay3;
+        }
+        return returnlayout;
     }
 }

@@ -4,12 +4,6 @@
     android:layout_height="match_parent">
 
         <include
-            android:id="@+id/lay3"
-            layout="@layout/fragment_home_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <include
             android:id="@+id/lay2"
             layout="@layout/fragment_home_nosaved"
             android:layout_width="match_parent"

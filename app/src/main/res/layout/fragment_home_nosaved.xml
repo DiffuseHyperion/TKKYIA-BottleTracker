@@ -21,12 +21,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--Added space as when you clicked home from the drawer you would also click on the button,
-            kind of a lazy way to deal with this but it works haha-->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="45dp" />
-
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
@@ -46,6 +40,10 @@
                 android:text="@string/save_one_below"
                 android:textAlignment="center"
                 android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <Button
                 android:id="@+id/setup"

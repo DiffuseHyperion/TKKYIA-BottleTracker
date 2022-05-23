@@ -81,7 +81,12 @@ public class SetupFragment extends Fragment {
                 if (count > before) {
                     // adding text
                     if (text != null && text.length() > 2) {
-                        View next = text.focusSearch(View.FOCUS_RIGHT);
+                        View next;
+                        if (text.getId() == R.id.editIP4) {
+                            next = text.focusSearch(View.FOCUS_DOWN);
+                        } else {
+                            next = text.focusSearch(View.FOCUS_RIGHT);
+                        }
                         if (next != null) {
                             next.requestFocus();
                         }

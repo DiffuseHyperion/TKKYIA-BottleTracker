@@ -1,9 +1,11 @@
 <resources>
+    <string name="nav_header_title">TKKYIA-BottleTracker</string>
+    <string name="nav_header_subtitle">Version: 0.3.2.1</string>
     <string name="app_name">TKKYIA-BottleTracker</string>
+
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">TKKYIA-BottleTracker</string>
-    <string name="nav_header_subtitle">Version: 0.3.2</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

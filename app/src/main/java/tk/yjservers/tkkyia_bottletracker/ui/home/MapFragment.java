@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
@@ -29,7 +30,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
         binding.mapView.onCreate(savedInstanceState);
         binding.mapView.onResume();
-
         binding.mapView.getMapAsync(this);
         return binding.getRoot();
     }
@@ -39,9 +39,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Add a marker in Sydney and move the camera
         Bundle bundle = getArguments();
         assert bundle != null;
-        LatLng sydney = new LatLng(bundle.getDouble("lat"), bundle.getDouble("long"));
-        googleMap.addMarker(new MarkerOptions().position(sydney).title(bundle.getString("name")));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        double latitude = bundle.getDouble("lat");
+        double longitude = bundle.getDouble("long");
+        String name = bundle.getString("name");
+        LatLng loc = new LatLng(latitude, longitude);
+        googleMap.addMarker(new MarkerOptions().position(loc).title(name));
+        ((Toolbar) requireActivity().findViewById(R.id.toolbar)).setTitle("Map: " + name);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
     }
 
     @Override

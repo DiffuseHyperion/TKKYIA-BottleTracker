@@ -1,5 +1,6 @@
 package tk.yjservers.tkkyia_bottletracker.ui.home;
 
+import static tk.yjservers.tkkyia_bottletracker.MainActivity.navToMap;
 import static tk.yjservers.tkkyia_bottletracker.MainActivity.preference;
 
 import android.content.Context;
@@ -12,11 +13,11 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Random;
 
 import tk.yjservers.tkkyia_bottletracker.R;
 import tk.yjservers.tkkyia_bottletracker.databinding.FragmentHomeBinding;
@@ -34,9 +35,10 @@ public class HomeFragment extends Fragment {
         setLayoutVisibility(Layouts.SAVED);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(preference, Context.MODE_PRIVATE);
+        NavController navController = NavHostFragment.findNavController(this);
         if (sharedPreferences.getAll().isEmpty()) {
             FragmentHomeNosavedBinding binding = (FragmentHomeNosavedBinding) setLayoutVisibility(Layouts.NOSAVED);
-            binding.setup.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.nav_setup));
+            binding.setup.setOnClickListener(v -> navController.navigate(R.id.nav_setup));
         } else {
             FragmentHomeSavedBinding binding = (FragmentHomeSavedBinding) setLayoutVisibility(Layouts.SAVED);
             Map<String, ?> set = sharedPreferences.getAll();
@@ -44,21 +46,7 @@ public class HomeFragment extends Fragment {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_home_saved_textview, list);
             binding.list.setAdapter(adapter);
             binding.list.setClickable(true);
-            binding.list.setOnItemClickListener((parent, view, position, id) -> {
-                Bundle bundle = new Bundle();
-
-                Random r = new Random();
-                int rangeMin1 = -180;
-                int rangeMax1 = 180;
-                int rangeMin2 = -90;
-                int rangeMax2 = 90;
-                double randomValue1 = rangeMin1 + (rangeMax1 - rangeMin1) * r.nextDouble();
-                double randomValue2 = rangeMin2 + (rangeMax2 - rangeMin2) * r.nextDouble();
-                bundle.putDouble("long", randomValue1);
-                bundle.putDouble("lat", randomValue2);
-                bundle.putString("name", Arrays.asList(list).get(position));
-                NavHostFragment.findNavController(requireParentFragment()).navigate(R.id.nav_map, bundle);
-            });
+            binding.list.setOnItemClickListener((parent, view, position, id) -> navToMap(requireActivity().getCurrentFocus(), navController, Arrays.asList(list).get(position)));
         }
 
         return rootbinding.getRoot();

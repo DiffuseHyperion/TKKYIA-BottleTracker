@@ -4,20 +4,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import tk.yjservers.tkkyia_bottletracker.databinding.ActivityMainBinding;
 
@@ -27,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     public static final String preference = "tkkyia_savedservers";
     public static SubMenu savedbottlesmenu;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,21 +74,54 @@ public class MainActivity extends AppCompatActivity {
         for (String s : list) {
             MenuItem item = savedbottlesmenu.add(s);
             item.setOnMenuItemClickListener(item1 -> {
-                Bundle bundle = new Bundle();
-
-                Random r = new Random();
-                int rangeMin1 = -180;
-                int rangeMax1 = 180;
-                int rangeMin2 = -90;
-                int rangeMax2 = 90;
-                double randomValue1 = rangeMin1 + (rangeMax1 - rangeMin1) * r.nextDouble();
-                double randomValue2 = rangeMin2 + (rangeMax2 - rangeMin2) * r.nextDouble();
-                bundle.putDouble("long", randomValue1);
-                bundle.putDouble("lat", randomValue2);
-                bundle.putString("name", s);
-                navController.navigate(R.id.nav_map, bundle);
+                navToMap(activity.getCurrentFocus(), navController, s);
                 return true;
             });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public static boolean navToMap(View view, NavController navController, String name) {
+        Bundle bundle = new Bundle();
+
+        CountDownLatch latch = new CountDownLatch(2);
+        Pair<Boolean, Double> latitude = null;
+        Pair<Boolean, Double> longitude = null;
+        URLThread threadLat = new URLThread("https://rest-test-api.diffusehyperion.repl.co/api/lat", latch, latitude);
+        URLThread threadLong = new URLThread("https://rest-test-api.diffusehyperion.repl.co/api/long", latch, longitude);
+        threadLat.start();
+        threadLong.start();
+        try {
+            latch.await();
+            if (!latitude.first && !longitude.first) {
+                bundle.putString("name", name);
+                bundle.putDouble("lat", latitude.second);
+                bundle.putDouble("long", latitude.second);
+                navController.navigate(R.id.nav_map, bundle);
+                return true;
+            } else {
+                Snackbar.make(view, "Something went wrong while contacting the bottle.", BaseTransientBottomBar.LENGTH_SHORT)
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                Snackbar.make(view, "Response codes (latitude, longitude): " + latitude.second + longitude.second, BaseTransientBottomBar.LENGTH_SHORT).show();
+                            }
+                        }).show();
+                return false;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

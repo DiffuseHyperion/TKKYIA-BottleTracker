@@ -1,6 +1,5 @@
 package tk.yjservers.tkkyia_bottletracker.ui.home;
 
-import static tk.yjservers.tkkyia_bottletracker.MainActivity.navToMap;
 import static tk.yjservers.tkkyia_bottletracker.MainActivity.preference;
 
 import android.content.Context;
@@ -46,7 +45,7 @@ public class HomeFragment extends Fragment {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_home_saved_textview, list);
             binding.list.setAdapter(adapter);
             binding.list.setClickable(true);
-            binding.list.setOnItemClickListener((parent, view, position, id) -> navToMap(requireActivity().getCurrentFocus(), navController, Arrays.asList(list).get(position)));
+            binding.list.setOnItemClickListener((parent, view, position, id) -> new MapMethods().navToMap(requireActivity(), navController, Arrays.asList(list).get(position)));
         }
 
         return rootbinding.getRoot();

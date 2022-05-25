@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import tk.yjservers.tkkyia_bottletracker.R;
 import tk.yjservers.tkkyia_bottletracker.databinding.FragmentMapBinding;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     private DrawerLayout drawerLayout;
 
@@ -41,6 +41,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         assert bundle != null;
         double latitude = bundle.getDouble("lat");
         double longitude = bundle.getDouble("long");
+
         String name = bundle.getString("name");
         LatLng loc = new LatLng(latitude, longitude);
         googleMap.addMarker(new MarkerOptions().position(loc).title(name));

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import tk.yjservers.tkkyia_bottletracker.MainActivity;
 import tk.yjservers.tkkyia_bottletracker.R;
@@ -49,10 +48,10 @@ public class MapMethods {
         if (ip.equals("error")) {
             Snackbar.make(view, "No saved data could be found on this bottle. Try resetting your saved data.", BaseTransientBottomBar.LENGTH_SHORT).show();
         } else {
-            String latURL = "http://" + ip + "/lat";
-            String longURL = "http://" + ip + "/long";
-            CompletableFuture<Pair<Boolean, Double>> futurelat = getRESTApi("https://rest-test-api.diffusehyperion.repl.co/api/lat");
-            CompletableFuture<Pair<Boolean, Double>> futurelong = getRESTApi("https://rest-test-api.diffusehyperion.repl.co/api/long");
+            String latURL = "http://" + ip + "/LAT";
+            String longURL = "http://" + ip + "/LONG";
+            CompletableFuture<Pair<Boolean, Double>> futurelat = getRESTApi(latURL);
+            CompletableFuture<Pair<Boolean, Double>> futurelong = getRESTApi(longURL);
 
             CountDownLatch latch = new CountDownLatch(2);
             futurelat.whenComplete((objects, throwable) -> {
@@ -90,14 +89,13 @@ public class MapMethods {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         CompletableFuture<Pair<Boolean, Double>> futurepair = new CompletableFuture<>();
         executor.execute(() -> {
-            HttpsURLConnection connection = null;
+            HttpURLConnection connection = null;
             try {
-                connection = (HttpsURLConnection) new URL(url).openConnection();
+                connection = (HttpURLConnection) new URL(url).openConnection();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             assert connection != null;
-            connection.setRequestProperty("User-Agent", "App-Client");
             try {
                 if (connection.getResponseCode() == 200) {
                     InputStream responseBody = connection.getInputStream();
